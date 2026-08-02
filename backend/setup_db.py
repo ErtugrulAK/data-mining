@@ -6,11 +6,11 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, Date, Fore
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime, timedelta
 
-DB_USER = "root"
-DB_PASS = "A123ebr123"
-DB_HOST = "localhost"
-DB_PORT = "3306"
-DB_NAME = "dynamic_pricing"
+DB_USER = os.getenv("DB_USER", "root")
+DB_PASS = os.getenv("DB_PASS", "A123ebr123")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "3306")
+DB_NAME = os.getenv("DB_NAME", "dynamic_pricing")
 
 # 1. Create database if it doesn't exist
 try:

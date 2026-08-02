@@ -1,3 +1,6 @@
+import os
+import datetime
+from pydantic import BaseModel
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, Column, Integer, String, Float, Date, ForeignKey, func, desc
@@ -8,11 +11,11 @@ import numpy as np
 from stable_baselines3 import PPO
 
 # --- Database Setup ---
-DB_USER = "root"
-DB_PASS = "A123ebr123"
-DB_HOST = "localhost"
-DB_PORT = "3306"
-DB_NAME = "dynamic_pricing"
+DB_USER = os.getenv("DB_USER", "root")
+DB_PASS = os.getenv("DB_PASS", "A123ebr123")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "3306")
+DB_NAME = os.getenv("DB_NAME", "dynamic_pricing")
 DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 engine = create_engine(DATABASE_URL)
@@ -84,7 +87,6 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
         "history": history
     }
 
-from pydantic import BaseModel
 class ForecastRequest(BaseModel):
     product_id: int
     hypothetical_price: float
@@ -124,7 +126,6 @@ def optimize_price(product_id: int, db: Session = Depends(get_db)):
     last_sale = db.query(SalesHistory).filter(SalesHistory.product_id == product_id).order_by(SalesHistory.date.desc()).first()
     comp_price = last_sale.competitor_price if last_sale else product.current_price
     
-    import datetime
     day_of_year = datetime.datetime.now().timetuple().tm_yday
     
     obs = np.array([product.current_price, comp_price, day_of_year, product.base_cost, product_id], dtype=np.float32)
