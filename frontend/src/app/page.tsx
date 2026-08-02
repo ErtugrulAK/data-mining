@@ -12,30 +12,67 @@ function cn(...inputs: ClassValue[]) {
 
 const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#10b981', '#f59e0b'];
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+interface ProductItem {
+  id: number;
+  name: string;
+  category: string;
+  base_cost: number;
+  current_price: number;
+  elasticity: number;
+}
+
+interface SalesHistoryItem {
+  id: number;
+  product_id: number;
+  date: string;
+  price: number;
+  competitor_price: number;
+  demand: number;
+  revenue: number;
+}
+
+interface OptimizationResult {
+  current_price: number;
+  optimal_price: number;
+  price_change_percentage: number;
+  predicted_demand: number;
+  predicted_profit: number;
+}
+
+interface SummaryData {
+  total_revenue: number;
+  total_products: number;
+  revenue_by_category: { name: string; value: number }[];
+  global_trend: { date: string; revenue: number }[];
+  top_products: { id: number; name: string; category: string; revenue: number }[];
+}
+
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'optimizer'>('overview');
   const [isDark, setIsDark] = useState(true);
-  const [products, setProducts] = useState<any[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [history, setHistory] = useState<any[]>([]);
+  const [products, setProducts] = useState<ProductItem[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
+  const [history, setHistory] = useState<SalesHistoryItem[]>([]);
   const [optimizing, setOptimizing] = useState(false);
-  const [optimizationResult, setOptimizationResult] = useState<any>(null);
-  const [summary, setSummary] = useState<any>(null);
+  const [optimizationResult, setOptimizationResult] = useState<OptimizationResult | null>(null);
+  const [summary, setSummary] = useState<SummaryData | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/products')
+    fetch(`${API_BASE_URL}/api/products`)
       .then(res => res.json())
       .then(data => setProducts(data))
       .catch(err => console.error(err));
       
-    fetch('http://localhost:8000/api/summary')
+    fetch(`${API_BASE_URL}/api/summary`)
       .then(res => res.json())
       .then(data => setSummary(data))
       .catch(err => console.error(err));
   }, []);
 
   const handleSelectProduct = (productId: number) => {
-    fetch(`http://localhost:8000/api/product/${productId}`)
+    fetch(`${API_BASE_URL}/api/product/${productId}`)
       .then(res => res.json())
       .then(data => {
         setSelectedProduct(data.product);
@@ -53,7 +90,7 @@ export default function Dashboard() {
   const handleOptimize = (productId: number) => {
     setOptimizing(true);
     setOptimizationResult(null);
-    fetch(`http://localhost:8000/api/optimize/${productId}`)
+    fetch(`${API_BASE_URL}/api/optimize/${productId}`)
       .then(res => res.json())
       .then(data => {
         setOptimizationResult(data);
@@ -68,7 +105,7 @@ export default function Dashboard() {
   const handleApplyPrice = () => {
     if (!selectedProduct || !optimizationResult) return;
     
-    fetch(`http://localhost:8000/api/apply_price/${selectedProduct.id}`, {
+    fetch(`${API_BASE_URL}/api/apply_price/${selectedProduct.id}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ new_price: optimizationResult.optimal_price })
