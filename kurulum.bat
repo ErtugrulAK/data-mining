@@ -1,33 +1,33 @@
 @echo off
 echo =======================================
-echo Proje Kurulumuna Hos Geldiniz!
-echo Bu islem birkac dakika surebilir...
+echo Dynamic Pricing AI - Project Setup
+echo This process may take a few minutes...
 echo =======================================
 
 echo.
-echo [1/2] Frontend bagimliliklari yukleniyor (Node.js)...
+echo [1/2] Installing Frontend dependencies (Node.js)...
 cd frontend
 call npm install
 cd ..
-echo Frontend kurulumu tamamlandi!
+echo Frontend installation completed!
 
 echo.
-echo [2/2] Backend bagimliliklari yukleniyor (Python)...
+echo [2/2] Installing Backend dependencies (Python)...
 cd backend
 
 if not exist venv (
-    echo Python sanal ortami (venv) olusturuluyor...
+    echo Creating Python virtual environment (venv)...
     python -m venv venv
 )
 
-echo Bagimliliklar kuruluyor...
+echo Installing dependencies...
 call venv\Scripts\activate.bat
 pip install -r requirements.txt
 cd ..
-echo Backend kurulumu tamamlandi!
+echo Backend installation completed!
 
 echo.
 echo =======================================
-echo Kurulum Basariyla Tamamlandi!
+echo Setup Successfully Completed!
 echo =======================================
 pause
