@@ -9,14 +9,10 @@ import joblib
 import pandas as pd
 import numpy as np
 from stable_baselines3 import PPO
+from config import DATABASE_URL, validate_db_password
 
-# --- Database Setup ---
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASS = os.getenv("DB_PASS", "A123ebr123")
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "3306")
-DB_NAME = os.getenv("DB_NAME", "dynamic_pricing")
-DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# Fail fast at startup if the MySQL password is not configured
+validate_db_password()
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
