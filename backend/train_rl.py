@@ -12,17 +12,9 @@ import joblib
 import warnings
 
 warnings.filterwarnings('ignore')
-from dotenv import load_dotenv
+from config import DATABASE_URL, validate_db_password
 
-# Load backend/.env (if present) regardless of the launch directory
-load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
-
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASS = os.getenv("DB_PASS", "")
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "3306")
-DB_NAME = os.getenv("DB_NAME", "dynamic_pricing")
-DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+validate_db_password()
 engine = create_engine(DATABASE_URL)
 
 os.makedirs('models', exist_ok=True)
