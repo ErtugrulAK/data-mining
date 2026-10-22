@@ -21,7 +21,7 @@ The system consists of three primary layers:
 - **Custom RL Environment:** Custom Gymnasium environment (`PricingEnv`). The agent utilizes the Random Forest demand model as a world simulator to discover reward-maximizing pricing actions.
 
 ### C. Frontend Presentation Layer (Next.js & Tailwind CSS)
-- **Dashboard:** Modern, responsive Next.js 15 application operating on port 3000.
+- **Dashboard:** Responsive Next.js 16 application operating on port 3000.
 - **Theme System:** Dynamic Dark and Light mode support with persistent state.
 - **Data Visualization:** Recharts library integration rendering real-time market trends, category revenue breakdown, and store performance metrics.
 
@@ -29,7 +29,7 @@ The system consists of three primary layers:
 
 ## 2. Technology Stack
 
-- **Frontend:** Next.js 15, React 19, Tailwind CSS v4, Framer Motion, Lucide React, Recharts.
+- **Frontend:** Next.js 16, React 19, Tailwind CSS v4, Framer Motion, Lucide React, Recharts.
 - **Backend:** FastAPI, SQLAlchemy, PyMySQL, Uvicorn, Pydantic.
 - **AI / ML / Data Mining:** Scikit-Learn (Random Forest), Stable-Baselines3 (RL - PPO), Gymnasium, Pandas, NumPy, Joblib.
 - **Database:** MySQL 8.0+.
@@ -40,8 +40,8 @@ The system consists of three primary layers:
 
 The system operates on a **"Model-in-the-Loop"** architecture:
 
-1. **Learning Phase:** The Random Forest regressor trains on 73,000 historical sales rows to model price elasticity and market competition dynamics.
-2. **Simulation Phase:** The Reinforcement Learning agent uses the trained Random Forest model as a sandbox environment, simulating thousands of pricing micro-adjustments per second.
+1. **Learning Phase:** The Random Forest regressor fits the ~73,000 generated sales rows in full (no train/test split and no accuracy metrics were recorded; see the README for the honest evaluation caveat).
+2. **Simulation Phase:** The reinforcement learning agent trains inside `PricingEnv` for 10,000 environment steps (PPO, MlpPolicy), using the fitted Random Forest model to score each candidate price.
 3. **Decision Phase:** Once the agent identifies the profit-maximizing equilibrium between price and forecasted demand, it recommends the "Optimal Price" to the store operator.
 
 ---
@@ -50,8 +50,8 @@ The system operates on a **"Model-in-the-Loop"** architecture:
 
 ### Setup Steps
 1. **Database:** Ensure MySQL server is active locally.
-2. **Data Generation:** Execute `python backend/setup_db.py` to create tables and generate historical data.
-3. **Model Training:** Execute `python backend/train_rl.py` to train both Random Forest and PPO models (saved to `backend/models/`).
+2. **Data Generation:** From `backend/`, run `python setup_db.py` to create tables and generate historical data.
+3. **Model Training:** From `backend/`, run `python train_rl.py` to train both Random Forest and PPO models (artifacts are written to `backend/models/` relative to the working directory, so run the script from that directory).
 4. **Backend:** Launch the API server from `backend/` using `uvicorn main:app --port 8000`.
 5. **Frontend:** Launch the interface from `frontend/` using `npm run dev`.
 

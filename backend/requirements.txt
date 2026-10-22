@@ -8,3 +8,4 @@ gymnasium
 stable-baselines3
 scikit-learn
 joblib
+python-dotenv
