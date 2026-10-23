@@ -16,6 +16,15 @@ price application against a MySQL database.
 realistic but the "market" is synthetic. No hold-out evaluation or profit-lift
 metric was recorded — see [Model evaluation](#model-evaluation).
 
+
+## A real result from the committed model
+
+![Demand curve](docs/screenshots/dm_demand_curve.png)
+*Predicted demand for a price sweep using the repository's committed RandomForest
+model (`backend/models/demand_model.pkl` + `scaler.pkl`) with representative
+inputs (base cost 10, competitor 12, day 100) — model is real, the input
+scenario is illustrative. No database or account was used to render this.*
+
 ## How it works
 
 ```
