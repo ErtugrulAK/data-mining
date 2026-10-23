@@ -25,6 +25,13 @@ model (`backend/models/demand_model.pkl` + `scaler.pkl`) with representative
 inputs (base cost 10, competitor 12, day 100) — model is real, the input
 scenario is illustrative. No database or account was used to render this.*
 
+![PPO policy](docs/screenshots/dm_ppo_policy.png)
+*Deterministic actions of the committed PPO agent (`ppo_pricing_agent.zip`) across
+the same representative feature grid, exactly as `/api/optimize` queries it. The
+trained policy is near-stationary: it recommends a ~+4.5% price increase for
+every price in the range — honest observed behavior, not the adaptive pricer a
+demo video might suggest.*
+
 ## How it works
 
 ```
